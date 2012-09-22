@@ -25,7 +25,7 @@ public class ClientHello
 		contentType = 0x16;
 		version = 0x0301;
 		handshakeType = 1;
-		version2 = 0x0301;
+		version2 = 0x0303;
 		sessionIDLength = 0;
 		compressionLength = 1;
 		compression = 0;
