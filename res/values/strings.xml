@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">TLS Labs Scanner</string>
+    <string name="app_name">TLS Labs</string>
+    <string name="host_hint">Host to Scan</string>
+    <string name="port_text">443</string>
+    <string name="scan_button_text">Scan</string>
+    <string name="results_hint">results...</string>
+    <string name="scan_successful">scan successful</string>
+
+</resources>
