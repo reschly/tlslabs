@@ -1,5 +1,6 @@
 package com.reschly.tlslabs;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
 public class ClientHello
@@ -18,9 +19,15 @@ public class ClientHello
 	private int extensionLength;
 	private byte[] supportedCurves = {00, 0x0a, 00, 0x08, 00, 06, 00, 0x17, 00, 0x18, 00, 0x19};
 	private byte[] curveFormats = { 00, 0x0b, 00, 02, 01, 00 };
+	private byte[] sni;
 	Random rand = new Random();
 	
 	public ClientHello()
+	{
+		this(null);
+	}
+	
+	public ClientHello(String hostname) 
 	{
 		contentType = 0x16;
 		version = 0x0301;
@@ -29,9 +36,37 @@ public class ClientHello
 		sessionIDLength = 0;
 		compressionLength = 1;
 		compression = 0;
-		extensionLength = supportedCurves.length + curveFormats.length;
+		setSni(hostname);
+		extensionLength = supportedCurves.length + curveFormats.length + sni.length;
 		random = new byte[32];
 		rand.nextBytes(random);
+	}
+	
+	private void setSni(String hostname)
+	{
+		if (hostname == null)
+		{
+			sni = new byte[0];
+			return;
+		}
+		sni = new byte[hostname.length() + 9];
+		sni[0] = 0; // type=0x0000
+		sni[1] = 0; 
+		sni[2] = (byte) (((hostname.length() + 5) >> 8) & 0xff); // extension length
+		sni[3] = (byte) ((hostname.length() + 5) & 0xff);
+		sni[4] = (byte) (((hostname.length() + 3) >> 8) & 0xff); // server name list length
+		sni[5] = (byte) ((hostname.length() + 3) & 0xff);
+		sni[6] = 0; // server name type = hostname
+		sni[7] = (byte) ((hostname.length() >> 8) & 0xff);
+		sni[8] = (byte) (hostname.length() & 0xff);
+		try
+		{
+			System.arraycopy(sni, 0, hostname.getBytes("US-ASCII"), 9, hostname.getBytes("US-ASCII").length);
+		} 
+		catch (UnsupportedEncodingException e)
+		{
+			sni = new byte[0];
+		}
 	}
 	
 	public void setCiphers(CipherSuite[] ciph)
@@ -74,9 +109,12 @@ public class ClientHello
 		result[i] = (byte)((extensionLength>>8)&0xff);
 		result[i+1] = (byte)(extensionLength&0xff);
 		i+=2;
+		System.arraycopy(sni, 0, result, i, sni.length);
+		i+= sni.length;
 		System.arraycopy(supportedCurves, 0, result, i, supportedCurves.length);
 		i+=supportedCurves.length;
 		System.arraycopy(curveFormats, 0, result, i, curveFormats.length);
+		i+=curveFormats.length;
 				
 		return result;
 		
