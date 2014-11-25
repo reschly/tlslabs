@@ -22,7 +22,7 @@ public class TlsScanner
 		{
 			while (ciphers.length > 0)
 			{
-				ClientHello ch = new ClientHello();
+				ClientHello ch = new ClientHello(host);
 				ch.setCiphers(ciphers);
 				byte[] tlsBytes = ch.toByteArray();
 
