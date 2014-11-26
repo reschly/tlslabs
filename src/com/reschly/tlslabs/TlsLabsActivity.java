@@ -54,6 +54,7 @@ public class TlsLabsActivity extends Activity implements OnClickListener {
 				if (TextUtils.isEmpty(host))
 				{
 					toast.setText("Empty hostname");
+					toast.show();
 					return;
 				}
 				int port;
@@ -112,7 +113,7 @@ public class TlsLabsActivity extends Activity implements OnClickListener {
 			}
 			catch (Exception e)
 			{
-				result = e.getMessage();
+				result = e.getClass().getSimpleName() + ": " + e.getMessage();
 			}
 			return result;
 		}

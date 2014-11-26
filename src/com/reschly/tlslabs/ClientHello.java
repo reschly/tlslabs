@@ -61,7 +61,8 @@ public class ClientHello
 		sni[8] = (byte) (hostname.length() & 0xff);
 		try
 		{
-			System.arraycopy(sni, 0, hostname.getBytes("US-ASCII"), 9, hostname.getBytes("US-ASCII").length);
+			byte[] hostnameASCII = hostname.getBytes("US-ASCII"); // ASCII per rfc
+			System.arraycopy(hostnameASCII, 0, sni, 9, hostnameASCII.length);
 		} 
 		catch (UnsupportedEncodingException e)
 		{
